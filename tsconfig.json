@@ -1,0 +1,25 @@
+// {
+//     "compilerOptions": {
+//       "sourceMap": true,
+//       "outDir": "dist",
+//       "lib": ["esnext"],
+//       "esModuleInterop": true
+//     }
+//   }
+
+
+// for production build for deployment
+
+
+{
+  "compilerOptions": {
+    "sourceMap": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": false,
+    "lib": ["esnext"],
+    "esModuleInterop": true,
+    "declaration": true
+  },
+  "include": ["src/**/*.ts"]
+}
