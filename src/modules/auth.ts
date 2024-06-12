@@ -11,37 +11,83 @@ export const hashPassword = (password)=>{
 
 
 
-export const createJWT = ({id,username})=>{
-    const token = jwt.sign({id,username}, process.env.JWT_SECRET)
-    return token
+export const createJWT = ({id, username}) => {
+  const token = jwt.sign({id, username}, process.env.JWT_SECRET, {
+    expiresIn: '4h' // The token will expire after 4 hours
+  });
+  return token;
 }
 
-export const protect = (req,res,next)=>{
-    const bearer = req.headers.authorization
 
-    if(!bearer){
-        res.status(401)
-        res.json({Message:'Headers Auth missing'})
-        return
-    }
 
-    const [,token] = bearer.split(' ')
+export const operatorProtect = (req, res, next) => {
+  const bearer = req.headers.authorization;
 
-    if(!token){
-        res.status(401)
-        res.json({Message:'Token missing'})
-        return
-    }
+  if (!bearer) {
+    res.status(401);
+    res.json({ Message: 'Headers Auth missing' });
+    return;
+  }
 
-    try {
-        const user = jwt.verify(token,process.env.JWT_SECRET)
-        console.log(user,'user')
-        req.user = user
-        next()
-    } catch (error) {
-        res.status(401)
-        res.json({Message:'invalid token'})
-        console.log(error)
-        return
-    }  
-}
+  const [, token] = bearer.split(' ');
+
+  if (!token) {
+    res.status(401);
+    res.json({ Message: 'Token missing' });
+    return;
+  }
+
+  try {
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    console.log(payload, 'payload');
+
+    // Attach the user's id and role to the request object
+    req.user = {
+      id: payload.id,
+      
+    };
+
+    next();
+  } catch (error) {
+    res.status(401);
+    res.json({ Message: 'invalid token' });
+    console.log(error);
+    return;
+  }
+};
+
+export const adminProtect = (req, res, next) => {
+  const bearer = req.headers.authorization;
+
+  if (!bearer) {
+    res.status(401);
+    res.json({ Message: 'Headers Auth missing' });
+    return;
+  }
+
+  const [, token] = bearer.split(' ');
+
+  if (!token) {
+    res.status(401);
+    res.json({ Message: 'Token missing' });
+    return;
+  }
+
+  try {
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    console.log(payload, 'payload');
+
+    // Attach the user's id and role to the request object
+    req.user = {
+      id: payload.id,
+      
+    };
+
+    next();
+  } catch (error) {
+    res.status(401);
+    res.json({ Message: 'invalid token' });
+    console.log(error);
+    return;
+  }
+};
