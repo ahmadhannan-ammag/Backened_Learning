@@ -6,6 +6,7 @@ process.env.NODE_ENV = process.env.NODE_ENV || "development";
 const stage = process.env.STAGE || "local";
 let envConfig;
 
+
 // dynamically require each config depending on the stage we're in
 if (stage === "production") {
   envConfig = require("./production").default;

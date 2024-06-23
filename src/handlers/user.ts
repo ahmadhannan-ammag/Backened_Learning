@@ -1,6 +1,7 @@
 import prisma from "../db"
 import { comparePawsswords, createJWT, hashPassword } from "../modules/auth"
 
+
 export const createOperator = async (req, res, next) => {
   try {
     const user = await prisma.operator.create({
@@ -109,6 +110,11 @@ export const adminSignin = async (req, res, next) => {
 
 
 export async function getAllOperators(req, res, next) {
+
+
+
+
+
   try {
     const users = await prisma.operator.findMany({
       select: {

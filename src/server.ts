@@ -5,6 +5,7 @@ import { adminProtect, operatorProtect } from "./modules/auth"
 import { adminSignin, createOperator, deleteOperator, getAllOperators, signin } from "./handlers/user"
 import { addTranslation, getOnePublicNews, getPublicNews } from "./handlers/news"
 import rateLimit from "express-rate-limit"
+import router, { getTheme } from "./handlers/adsAndTheme"
 
 
 const express = require('express')
@@ -17,24 +18,24 @@ app.use(express.urlencoded({ extended: true }))
 
 
 
-// const limiter = rateLimit({
-//     windowMs: 15 * 60 * 1000, // 15 minutes
-//     max: 100, // limit each IP to 100 requests per windowMs
-//     handler: function (req, res) {
-//         res.status(429).json({ error: 'Too many requests, please try again later.' });
-//     },
-// });
-
-
-
-
 const limiter = rateLimit({
-    windowMs: 5 * 1000, // 5 seconds
-    max: 1, // limit each IP to 1 request per windowMs
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // limit each IP to 100 requests per windowMs
     handler: function (req, res) {
         res.status(429).json({ error: 'Too many requests, please try again later.' });
     },
 });
+
+
+
+
+// const limiter = rateLimit({
+//     windowMs: 5 * 1000, // 5 seconds
+//     max: 1, // limit each IP to 1 request per windowMs
+//     handler: function (req, res) {
+//         res.status(429).json({ error: 'Too many requests, please try again later.' });
+//     },
+// });
 
 
 
@@ -56,6 +57,7 @@ app.use((req, res, next) => {
 // public
 app.get('/api/paris-news/:language', getPublicNews)
 app.get('/api/paris-news/:language/:id', getOnePublicNews)
+app.get('/api/paris/theme', getTheme)
 
 app.post('/api/operator/signin', signin)
 app.use('/api/operator', operatorProtect, OperatorRouter)
@@ -64,15 +66,9 @@ app.use('/api/operator', operatorProtect, OperatorRouter)
 
 app.post('/api/admin/signin', adminSignin)
 app.get('/api/admin/operator', adminProtect, getAllOperators)
+app.use('/api/admin', adminProtect, router)
 app.post('/api/admin/create-operator', adminProtect, createOperator)
 app.delete('/api/admin/operator/:id', adminProtect, deleteOperator)
-
-
-
-
-
-
-
 
 
 // error  handler, should be define at the end of the middlewares and routes

@@ -32,8 +32,8 @@ model Admin {
 model News {
   id           Int           @id @default(autoincrement())
   image        String
-  operatorId   Int
-  operator     Operator      @relation(fields: [operatorId], references: [id])
+  operatorId   Int?
+  operator     Operator?      @relation(fields: [operatorId], references: [id])
   translations Translation[]
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
@@ -61,4 +61,22 @@ model Translation {
 enum NewsState {
   PUBLISHED
   NOT_PUBLISHED
+}
+
+
+model TitleAd {
+  countryCode String  @id
+  image       String
+}
+
+model BannerAd {
+  countryCode String  @id
+  image       String
+}
+
+model ColorTheme {
+  countryCode String  @id
+  base        String
+  text        String
+  background  String
 }
